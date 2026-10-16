@@ -105,10 +105,13 @@ export const SmoothiePopupModal: React.FC<SmoothiePopupModalProps> = ({
               alt="Elena coach"
               className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md shrink-0"
             />
-            <div className="bg-white/90 backdrop-blur-md p-2 rounded-xl text-left border border-white/40 shadow-xs">
-              <span className="text-[10px] uppercase font-bold text-[#904639] block">
-                Elena • Tu Especialista
-              </span>
+            <div className="bg-white/95 backdrop-blur-md p-2 rounded-xl text-left border border-white/40 shadow-xs flex-1">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="material-symbols-outlined text-[13px] text-[#904639]">restaurant_menu</span>
+                <span className="text-[10px] uppercase font-bold text-[#904639] block">
+                  Recomendación de Elena:
+                </span>
+              </div>
               <p className="text-[11px] text-[#1c1c19] italic leading-tight">
                 {currentSmoothie.elenaTip}
               </p>
@@ -152,30 +155,105 @@ export const SmoothiePopupModal: React.FC<SmoothiePopupModalProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-between pt-1">
-          <button
-            onClick={() => setSavedFavorite(!savedFavorite)}
-            className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-              savedFavorite
-                ? 'bg-[#cfe5d1] text-[#384b3d]'
-                : 'bg-[#f6f3ee] text-[#544340] hover:bg-[#ebe8e3]'
-            }`}
-          >
-            <span
-              className="material-symbols-outlined text-[16px]"
-              style={savedFavorite ? { fontVariationSettings: "'FILL' 1" } : undefined}
-            >
-              favorite
+        {/* Clean Nutraceutical & Supplement Affiliates (Cúrcuma, Magnesio, Colágeno) */}
+        <div className="p-3 bg-[#f6f3ee] rounded-2xl border border-[#dac1bd]/40 space-y-2 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-[#1c1c19] text-[11px] flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[15px] text-[#4f6353]">verified</span>
+              Ingredientes & Suplementación Limpia Recomendada:
             </span>
-            <span>{savedFavorite ? 'Guardado en Favoritos' : 'Guardar Receta'}</span>
-          </button>
+            <span className="text-[9px] bg-[#ffdad4] text-[#3c0702] font-bold px-1.5 py-0.2 rounded">
+              Cupón: AURA10
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10.5px]">
+            <a
+              href="https://amazon.es/dp/B077ZJ8Z3B?tag=auravital-21"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-white border border-[#dac1bd]/30 hover:border-[#904639] transition-all flex items-center justify-between text-[#544340] hover:text-[#1c1c19] shadow-2xs group"
+            >
+              <div className="truncate">
+                <span className="font-bold text-[#1c1c19] block truncate">Cúrcuma Orgánica (95% Curcuminoides)</span>
+                <span className="text-[9.5px] text-[#706663]">Bio Certificada • Antiinflamatorio</span>
+              </div>
+              <span className="material-symbols-outlined text-[14px] text-[#904639] group-hover:translate-x-0.5 transition-transform shrink-0 ml-1">
+                open_in_new
+              </span>
+            </a>
+
+            <a
+              href="https://amazon.es/dp/B000FGWDTK?tag=auravital-21"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-white border border-[#dac1bd]/30 hover:border-[#904639] transition-all flex items-center justify-between text-[#544340] hover:text-[#1c1c19] shadow-2xs group"
+            >
+              <div className="truncate">
+                <span className="font-bold text-[#1c1c19] block truncate">Glicinato de Magnesio Quelado</span>
+                <span className="text-[9.5px] text-[#706663]">300mg • Sueño & Tono Vagal</span>
+              </div>
+              <span className="material-symbols-outlined text-[14px] text-[#904639] group-hover:translate-x-0.5 transition-transform shrink-0 ml-1">
+                open_in_new
+              </span>
+            </a>
+          </div>
+        </div>
+
+        {/* Action Buttons: Save, Share to WhatsApp / Pinterest, Close */}
+        <div className="space-y-2 pt-1 border-t border-[#dac1bd]/20">
+          <div className="flex items-center justify-between gap-2">
+            <button
+              onClick={() => setSavedFavorite(!savedFavorite)}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                savedFavorite
+                  ? 'bg-[#cfe5d1] text-[#384b3d]'
+                  : 'bg-[#f6f3ee] text-[#544340] hover:bg-[#ebe8e3]'
+              }`}
+            >
+              <span
+                className="material-symbols-outlined text-[16px]"
+                style={savedFavorite ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                favorite
+              </span>
+              <span>{savedFavorite ? 'En Favoritos' : 'Guardar Receta'}</span>
+            </button>
+
+            {/* Share to WhatsApp with Watermark */}
+            <button
+              onClick={() => {
+                const text = encodeURIComponent(
+                  `🌿 ${currentSmoothie.name} (Recomendación de Elena en AuraVital)\n\n${currentSmoothie.hormoneBenefit}\n\nIngredientes: ${currentSmoothie.ingredients.join(', ')}\n\n✨ Sincroniza tu ritmo biológico a los 30+ con @AuraVital`
+                );
+                window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+              }}
+              className="py-2 px-3 bg-[#25d366]/15 hover:bg-[#25d366]/25 text-[#128c7e] rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+              title="Compartir ficha en WhatsApp con marca de agua"
+            >
+              <span className="material-symbols-outlined text-[16px]">share</span>
+              <span>WhatsApp</span>
+            </button>
+
+            {/* Pinterest Ready */}
+            <button
+              onClick={() => {
+                const url = encodeURIComponent(currentSmoothie.imageUrl);
+                const desc = encodeURIComponent(`${currentSmoothie.name} • Receta Antiinflamatoria Hormonal 30+ por @AuraVital`);
+                window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent('https://auravital.app')}&media=${url}&description=${desc}`, '_blank');
+              }}
+              className="py-2 px-3 bg-[#e60023]/10 hover:bg-[#e60023]/20 text-[#e60023] rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+              title="Guardar en tablero de Pinterest"
+            >
+              <span>Pinterest</span>
+            </button>
+          </div>
 
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[#904639] text-white rounded-xl text-xs font-semibold hover:bg-[#ae5e4f] shadow-xs cursor-pointer transition-all"
+            className="w-full py-2 bg-[#904639] text-white rounded-xl text-xs font-semibold hover:bg-[#ae5e4f] shadow-xs cursor-pointer transition-all"
           >
-            Entendido, volver al Menú
+            Volver a la Guía Nutricional
           </button>
         </div>
       </div>

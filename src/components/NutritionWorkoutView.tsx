@@ -276,26 +276,44 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                   </div>
                 </div>
 
-                {/* 3 Interactive Budget Tier Cards */}
+                {/* 3 Interactive Budget Tier Cards (1st FREE, 2nd & 3rd PREMIUM) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-                  {(['economico', 'equilibrado', 'flexible'] as BudgetTier[]).map((tierKey) => {
+                  {(['economico', 'equilibrado', 'flexible'] as BudgetTier[]).map((tierKey, index) => {
                     const cfg = BUDGET_TIER_CONFIG[tierKey];
                     const isSelected = budgetTier === tierKey;
+                    const isFreeTier = index === 0;
+                    const isProLocked = !isFreeTier && subscription.tier === 'free';
 
                     return (
                       <div
                         key={tierKey}
                         onClick={() => handleSelectTier(tierKey)}
-                        className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                        className={`p-3 rounded-xl border text-left cursor-pointer transition-all relative ${
                           isSelected
                             ? 'bg-[#ffffff] border-[#904639] ring-2 ring-[#904639]/20 shadow-xs'
                             : 'bg-[#f6f3ee]/80 border-[#dac1bd]/40 hover:bg-[#ebe8e3]'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="material-symbols-outlined text-[20px] text-[#904639]">
-                            {cfg.icon}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[20px] text-[#904639]">
+                              {cfg.icon}
+                            </span>
+                            {isFreeTier ? (
+                              <span className="text-[8.5px] font-bold uppercase tracking-wider bg-[#cfe5d1] text-[#2d4734] px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[10px]">check_circle</span>
+                                1ª FREE
+                              </span>
+                            ) : (
+                              <span className="text-[8.5px] font-bold uppercase tracking-wider bg-[#ffdad4] text-[#904639] px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
+                                <span className="material-symbols-outlined text-[10px]">
+                                  {isProLocked ? 'lock' : 'workspace_premium'}
+                                </span>
+                                PRO
+                              </span>
+                            )}
+                          </div>
+
                           <span
                             className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                               isSelected
@@ -322,6 +340,33 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                     );
                   })}
                 </div>
+
+                {/* Banner when a free user clicks a Premium budget tier (2nd or 3rd) */}
+                {budgetTier !== 'economico' && subscription.tier === 'free' && (
+                  <div className="p-3 bg-gradient-to-r from-[#ffdad4]/50 to-[#fcf9f4] border border-[#ffdad4] rounded-xl flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[#904639] text-[20px] shrink-0">
+                        workspace_premium
+                      </span>
+                      <div>
+                        <span className="font-bold text-[#1c1c19] block">
+                          Propuesta Especializada ({BUDGET_TIER_CONFIG[budgetTier].label}) • Versión Premium
+                        </span>
+                        <span className="text-[11px] text-[#544340]">
+                          La propuesta <strong>Económica (~{currency}32/sem) es 100% FREE</strong>. Esta propuesta avanzada con recetas gourmet e ingredientes premium forma parte del <strong>Plan Hormonal Pro (máx. $7.99/mes)</strong>.
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={onOpenSubscription}
+                      className="shrink-0 px-3 py-1.5 bg-[#904639] text-white font-bold rounded-lg hover:bg-[#ae5e4f] shadow-xs cursor-pointer text-[11px]"
+                    >
+                      Ver Pro
+                    </button>
+                  </div>
+                )}
 
                 {/* Custom Budget Slider / Input */}
                 <div className="p-3 bg-white rounded-xl border border-[#dac1bd]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
@@ -464,7 +509,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                     Días de la Semana:
                   </span>
                   <span className="text-[11px] text-[#706663]">
-                    2 días básicos gratuitos • 5 días con Plato Fuerte (PRO)
+                    2 días básicos gratuitos • 5 días con Plan Hormonal Pro
                   </span>
                 </div>
 
@@ -509,7 +554,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                       {currentDay.isPremium ? (
                         <span className="text-[10px] font-bold bg-[#ffdad4] text-[#3c0702] px-2 py-0.5 rounded-full flex items-center gap-1">
                           <span className="material-symbols-outlined text-[12px]">workspace_premium</span>
-                          Plato Fuerte • PRO
+                          Plan Hormonal Pro
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold bg-[#cfe5d1] text-[#384b3d] px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -555,10 +600,10 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="font-headline text-base font-bold text-[#1c1c19]">
-                    Platos 4K del {currentDay.dayName}
+                    Nutrición Metabólica del {currentDay.dayName}
                   </h4>
                   <span className="text-[11px] text-[#706663]">
-                    Fotografía Full HD con Elena preparando y degustando
+                    Guía fotográfica culinaria y técnica clínica de Elena
                   </span>
                 </div>
 
@@ -592,7 +637,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                                 <span className="material-symbols-outlined text-[13px]">
                                   workspace_premium
                                 </span>
-                                Plato Fuerte • PRO
+                                Plan Hormonal Pro
                               </span>
                             ) : (
                               <span className="text-[11px] font-bold bg-[#cfe5d1] text-[#384b3d] px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs">
@@ -609,18 +654,21 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                           </div>
                         </div>
 
-                        {/* Elena Cooking / Eating Live Influencer Overlay */}
+                        {/* Elena Cooking / Live Influencer Overlay with Direct Practical Recommendation */}
                         <div className="absolute bottom-3 left-3 right-3 flex items-end gap-2.5">
                           <img
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVLhO4NHhOkmyaAVrqvx-STu8fO_IdCpzaogagRoe0wqJlE--blT1-_qLUjP4XsILxB50tt3LZNhqPoQfLZ0xI_9b8vot0Hy1XJ2HwKZZ1OqllGH6DT1O7OXQHgtFM-Za3UtWADrLUCDtIN4BTUC1hE5BL624CJbCC-7YLUDaCtBBily_28X3TfVhegFmbev-O-CR97mNllsMWGvUL7r3_xFa9ppmtnyjVC97OfoJvJlRikinHpjPyHw"
                             alt="Elena Especialista"
                             className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md shrink-0"
                           />
-                          <div className="bg-white/92 backdrop-blur-md p-2 rounded-xl text-left border border-white/40 shadow-xs flex-1">
-                            <span className="text-[10px] uppercase font-bold text-[#904639] block">
-                              {meal.elenaAction}
-                            </span>
-                            <p className="text-[11px] text-[#1c1c19] italic leading-tight truncate sm:whitespace-normal">
+                          <div className="bg-white/95 backdrop-blur-md p-2.5 rounded-xl text-left border border-[#dac1bd]/30 shadow-xs flex-1">
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              <span className="material-symbols-outlined text-[13px] text-[#904639]">restaurant_menu</span>
+                              <span className="text-[10px] font-bold text-[#904639] uppercase tracking-wider">
+                                Recomendación de Elena:
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[#1c1c19] italic leading-snug">
                               {meal.elenaQuote}
                             </p>
                           </div>
@@ -648,7 +696,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                           </div>
                         </div>
 
-                        {/* Locked State for Plato Fuerte (if Free user) */}
+                        {/* Locked State for Plan Hormonal Pro (if Free user) */}
                         {isProLocked ? (
                           <div className="p-3 rounded-xl bg-gradient-to-r from-[#ffdad4]/40 to-[#f6f3ee] border border-[#ffdad4] flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
@@ -657,7 +705,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                               </span>
                               <span className="text-xs text-[#3c0702]">
                                 Receta completa con porciones y pasos guiados en la membresía{' '}
-                                <strong>Plato Fuerte ($7.99/mes)</strong>.
+                                <strong>Plan Hormonal Pro ($7.99/mes)</strong>.
                               </span>
                             </div>
                             <button
@@ -840,7 +888,7 @@ export const NutritionWorkoutView: React.FC<NutritionWorkoutViewProps> = ({
                   <span className="material-symbols-outlined text-[16px] text-[#904639]">
                     workspace_premium
                   </span>
-                  Plato Fuerte: Rutinas Adaptadas 30+
+                  Plan Hormonal Pro: Rutinas Adaptadas 30+
                 </span>
                 <p className="text-[11px] text-[#544340] mt-0.5">
                   Las rutinas avanzadas de 30m y 45m incluyen progresión de cargas para sarcopenia. Accede por solo $7.99/mes.

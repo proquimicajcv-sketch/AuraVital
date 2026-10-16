@@ -88,6 +88,50 @@ export const CommunityForumView: React.FC<CommunityForumViewProps> = ({
         </p>
       </div>
 
+      {/* Network Effect: Invitar a una amiga / Círculo Cercano */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-[#ffdad4]/40 via-[#fcf9f4] to-[#cfe5d1]/40 border border-[#dac1bd]/40 space-y-2.5 shadow-2xs">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-2.5">
+            <span className="material-symbols-outlined text-[#904639] text-[22px] shrink-0 mt-0.5">
+              group_add
+            </span>
+            <div>
+              <span className="font-bold text-xs text-[#1c1c19] block">
+                Sincroniza tu ritmo con tu círculo cercano
+              </span>
+              <p className="text-[11px] text-[#544340] leading-snug">
+                El bienestar y el cambio de hábitos se sostienen mejor juntas. Invita a una amiga, compañera o hermana a acompañarse en sus fases hormonales y rutinas 30+.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 pt-1">
+          <button
+            onClick={() => {
+              const text = encodeURIComponent(
+                '🌿 ¡Hola! Te invito a sincronizar tu ritmo biológico y salud hormonal 30+ conmigo en AuraVital. Descubre cómo tus fases influyen en tu energía, nutrición y descanso: https://auravital.app/invite?ref=valeria'
+              );
+              window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            }}
+            className="flex-1 py-1.5 px-3 bg-[#25d366] text-white text-xs font-bold rounded-xl hover:bg-[#20ba59] transition-all flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[15px]">send</span>
+            <span>Invitar por WhatsApp</span>
+          </button>
+
+          <button
+            onClick={() => {
+              navigator.clipboard?.writeText('https://auravital.app/invite?ref=valeria');
+              alert('Enlace de invitación copiado al portapapeles');
+            }}
+            className="py-1.5 px-3 bg-white text-[#544340] border border-[#dac1bd]/40 hover:bg-[#f6f3ee] text-xs font-semibold rounded-xl transition-all cursor-pointer"
+          >
+            Copiar enlace
+          </button>
+        </div>
+      </div>
+
       {/* Category Filter Pills */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
         {categories.map((cat) => (

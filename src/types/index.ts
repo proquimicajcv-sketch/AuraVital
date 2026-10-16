@@ -46,11 +46,26 @@ export interface DailySymptomLog {
   jointPain: boolean;
   sleepHours: number;
   flow?: 'none' | 'spotting' | 'light' | 'medium' | 'heavy';
+  digestion?: 'ligera' | 'hinchazon' | 'gases' | 'estrenimiento';
+  stress?: 'bajo' | 'moderado' | 'elevado' | 'sobrecarga';
   basalTemp?: number; // e.g. 36.6 °C
   breastTenderness?: boolean;
   waterRetention?: boolean;
   notes?: string;
   isPeriodStart?: boolean;
+}
+
+export interface HormonalProtocol {
+  id: string;
+  title: string;
+  subtitle: string;
+  durationDays: number;
+  oneTimePrice: number; // e.g. 14.99
+  category: 'cortisol' | 'progesterone' | 'metabolism';
+  badge: string;
+  description: string;
+  highlights: string[];
+  purchased?: boolean;
 }
 
 export interface WearableDevice {
@@ -118,8 +133,8 @@ export interface SuggestedMeal {
   description: string;
   proteinGrams: number;
   imageUrl: string;
-  isPremium: boolean; // Exactly 2 basic (free), rest are "Plato Fuerte"
-  elenaAction: string;
+  isPremium: boolean; // Exactly 2 basic (free), rest are Plan Hormonal Pro
+  elenaAction?: string;
   elenaQuote: string;
   prepTime: string;
   ingredients: string[];
@@ -133,7 +148,7 @@ export interface WeeklyDietDay {
   dayTheme: string;
   dailyEstimatedCost: number; // e.g. $4.50
   totalProtein: number; // e.g. 92
-  isPremium: boolean; // Lunes & Martes are basic free; Miércoles-Domingo are "Plato Fuerte"
+  isPremium: boolean; // Lunes & Martes are basic free; Miércoles-Domingo are Plan Hormonal Pro
   elenaDailyTip: string;
   meals: SuggestedMeal[];
 }

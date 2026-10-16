@@ -257,22 +257,34 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
         </div>
 
         {/* Pro membership banner if free tier */}
+        {/* One-Time Addon / Pro membership banner */}
         {subscription.tier === 'free' && (
-          <div className="p-3 rounded-xl bg-[#ffdad4]/40 border border-[#ffdad4] flex items-center justify-between gap-3 text-xs text-[#3c0702]">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[20px] text-[#904639]">
-                workspace_premium
-              </span>
-              <span>
-                Exportación oficial en PDF: incluida de forma ilimitada en el <strong>Plato Fuerte ($7.99/mes)</strong>.
-              </span>
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#ffdad4]/50 to-[#f6f3ee] border border-[#dac1bd]/40 space-y-2 text-xs">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2">
+                <span className="material-symbols-outlined text-[20px] text-[#904639] shrink-0 mt-0.5">
+                  clinical_notes
+                </span>
+                <div>
+                  <span className="font-bold text-[#1c1c19] block">
+                    Dossier Hormonal para tu Médico (PDF de Alta Fidelidad)
+                  </span>
+                  <span className="text-[11px] text-[#544340] leading-snug">
+                    Correlación clínica de 3 ciclos, VFC nocturna, delta térmico y marcadores lúteos. El ginecólogo o médico funcional valorará llegar a consulta con datos ya procesados.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1 shrink-0 text-right">
+                <button
+                  onClick={onOpenSubscription}
+                  className="px-3 py-1.5 bg-[#904639] text-white font-bold rounded-xl hover:bg-[#ae5e4f] text-[11px] shadow-2xs cursor-pointer"
+                >
+                  Plan Pro ($7.99/mes)
+                </button>
+                <span className="text-[9px] text-[#706663]">o compra única $14.99</span>
+              </div>
             </div>
-            <button
-              onClick={onOpenSubscription}
-              className="shrink-0 px-2.5 py-1 bg-[#904639] text-white font-semibold rounded-lg hover:bg-[#ae5e4f] text-[11px]"
-            >
-              Ver Planes
-            </button>
           </div>
         )}
 
@@ -280,7 +292,7 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
         <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[#dac1bd]/30">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-[#706663] hover:bg-[#f6f3ee]"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-[#706663] hover:bg-[#f6f3ee] cursor-pointer"
           >
             Cerrar
           </button>
@@ -293,9 +305,9 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
             <span className="material-symbols-outlined text-[18px]">download</span>
             <span>
               {isGenerating
-                ? 'Generando PDF...'
+                ? 'Generando PDF Clínico...'
                 : subscription.tier === 'premium'
-                ? 'Descargar PDF Clínico (PRO)'
+                ? 'Descargar Dossier Completo (PRO)'
                 : 'Descargar Muestra de Reporte'}
             </span>
           </button>

@@ -33,6 +33,9 @@ import { CommunityForumView } from './components/CommunityForumView';
 import { ClinicalReportModal } from './components/ClinicalReportModal';
 import { SelfCareModal } from './components/SelfCareModal';
 import { SubscriptionModal } from './components/SubscriptionModal';
+import { HormonalCarnetModal } from './components/HormonalCarnetModal';
+import { VagalHormonalQuizModal } from './components/VagalHormonalQuizModal';
+import { ProtocolsModal } from './components/ProtocolsModal';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('today');
@@ -42,7 +45,7 @@ export default function App() {
   const [posts, setPosts] = useState<ForumPost[]>(FORUM_POSTS);
   const [selectedDuration, setSelectedDuration] = useState<15 | 30 | 45>(30);
 
-  // User food budget tier preference
+  // User food budget tier preference: economico is 100% Free; equilibrado and flexible are Pro
   const [budgetTier, setBudgetTier] = useState<BudgetTier>(() => {
     try {
       const saved = localStorage.getItem('auravital_budget_tier');
@@ -86,6 +89,9 @@ export default function App() {
   const [isSelfCareOpen, setIsSelfCareOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [isCarnetOpen, setIsCarnetOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isProtocolsOpen, setIsProtocolsOpen] = useState(false);
 
   // Upgrade handler
   const handleUpgrade = (billing: BillingInterval) => {
@@ -187,7 +193,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#fcf9f4] text-[#1c1c19] flex flex-col font-body antialiased">
-      {/* Top Application Header */}
+      {/* Top Application Header (Cleaned up, calm & uncluttered) */}
       <Header
         currentTab={currentTab}
         onNavigate={setCurrentTab}
@@ -195,6 +201,8 @@ export default function App() {
         onOpenReportModal={() => setIsReportModalOpen(true)}
         subscription={subscription}
         onOpenSubscription={() => setIsSubscriptionModalOpen(true)}
+        onOpenQuiz={() => setIsQuizOpen(true)}
+        onOpenProtocols={() => setIsProtocolsOpen(true)}
       />
 
       {/* Main View Area */}
@@ -243,6 +251,9 @@ export default function App() {
           <WearablesSyncView
             wearables={wearables}
             onToggleConnect={handleToggleConnect}
+            onOpenCarnet={() => setIsCarnetOpen(true)}
+            onOpenSubscription={() => setIsSubscriptionModalOpen(true)}
+            subscription={subscription}
           />
         )}
 
@@ -258,7 +269,7 @@ export default function App() {
       {/* Persistent Bottom Dock Navigation */}
       <BottomNav currentTab={currentTab} onSelectTab={setCurrentTab} />
 
-      {/* Clinical PDF Report Modal */}
+      {/* Clinical PDF Report Modal ("Dossier Hormonal Clínico") */}
       <ClinicalReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -275,13 +286,46 @@ export default function App() {
         onClose={() => setIsSelfCareOpen(false)}
       />
 
-      {/* Freemium & Pro Membership Modal */}
+      {/* Freemium & Pro Membership Modal (3 Tiers + 14-day micro protocols) */}
       <SubscriptionModal
         isOpen={isSubscriptionModalOpen}
         onClose={() => setIsSubscriptionModalOpen(false)}
         subscription={subscription}
         onUpgrade={handleUpgrade}
         onCancelSubscription={handleCancelSubscription}
+        onOpenProtocols={() => {
+          setIsSubscriptionModalOpen(false);
+          setIsProtocolsOpen(true);
+        }}
+      />
+
+      {/* Hormonal Carnet 9:16 Viral Story Modal */}
+      <HormonalCarnetModal
+        isOpen={isCarnetOpen}
+        onClose={() => setIsCarnetOpen(false)}
+        hrvChangePercent={12}
+        phaseName="Fase Folicular"
+        sleepScore={88}
+      />
+
+      {/* Open Clinical Calculator: Test de Dominancia & Fatiga Vagal */}
+      <VagalHormonalQuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        onGoToNutrition={() => {
+          setIsQuizOpen(false);
+          setCurrentTab('nutrition_fitness');
+        }}
+      />
+
+      {/* 14-Day Specialized Protocols Modal ($12 - $17) */}
+      <ProtocolsModal
+        isOpen={isProtocolsOpen}
+        onClose={() => setIsProtocolsOpen(false)}
+        onOpenSubscription={() => {
+          setIsProtocolsOpen(false);
+          setIsSubscriptionModalOpen(true);
+        }}
       />
     </div>
   );

@@ -19,6 +19,8 @@ const INITIAL_SYMPTOMS: Record<number, DailySymptomLog> = {
     cramps: 2,
     jointPain: true,
     flow: 'heavy',
+    digestion: 'hinchazon',
+    stress: 'moderado',
     sleepHours: 7,
     notes: 'Primer día de sangrado; descanso activo y calor seco en sacro.',
     isPeriodStart: true,
@@ -30,6 +32,8 @@ const INITIAL_SYMPTOMS: Record<number, DailySymptomLog> = {
     cramps: 0,
     jointPain: false,
     flow: 'spotting',
+    digestion: 'ligera',
+    stress: 'bajo',
     sleepHours: 7.5,
     notes: 'Fin del sangrado, ligera sensación de mayor vitalidad matutina.',
   },
@@ -40,6 +44,8 @@ const INITIAL_SYMPTOMS: Record<number, DailySymptomLog> = {
     cramps: 0,
     jointPain: false,
     flow: 'none',
+    digestion: 'ligera',
+    stress: 'bajo',
     sleepHours: 8.2,
     notes: 'Pico de ovulación; energía alta para entrenamiento de fuerza.',
   },
@@ -50,6 +56,8 @@ const INITIAL_SYMPTOMS: Record<number, DailySymptomLog> = {
     cramps: 0,
     jointPain: false,
     flow: 'none',
+    digestion: 'ligera',
+    stress: 'moderado',
     sleepHours: 8,
   },
   21: {
@@ -59,6 +67,8 @@ const INITIAL_SYMPTOMS: Record<number, DailySymptomLog> = {
     cramps: 1,
     jointPain: false,
     flow: 'none',
+    digestion: 'gases',
+    stress: 'elevado',
     sleepHours: 7.5,
     notes: 'Ligera pesadez lumbar al final de la jornada; respondí bien al estiramiento.',
   },
@@ -470,66 +480,150 @@ export const CycleCalendarView: React.FC = () => {
         {/* Section: Interactive Symptom Editor */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1c1c19] flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-[#904639]">edit_note</span>
-              <span>Edición de Síntomas & Biomarcadores</span>
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#1c1c19] flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-[#904639]">edit_note</span>
+                <span>Registro Clínico Diario</span>
+              </h3>
+              <span className="text-[10px] bg-[#cfe5d1] text-[#384b3d] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="material-symbols-outlined text-[12px]">timer</span>
+                Check-in &lt; 10 seg
+              </span>
+            </div>
             <span className="text-[11px] text-[#4f6353] flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">cloud_done</span>
               Guardado automático
             </span>
           </div>
 
-          {/* Flow / Bleeding Intensity */}
-          <div className="space-y-1.5">
-            <span className="text-xs font-semibold text-[#544340] block">
-              Flujo / Sangrado:
-            </span>
-            <div className="grid grid-cols-5 gap-1 text-center">
-              {[
-                { id: 'none', label: 'Ninguno' },
-                { id: 'spotting', label: 'Manchado' },
-                { id: 'light', label: 'Ligero' },
-                { id: 'medium', label: 'Moderado' },
-                { id: 'heavy', label: 'Abundante' },
-              ].map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => updateSelectedLog('flow', f.id)}
-                  className={`py-1.5 rounded-lg text-[11px] font-semibold transition-all border cursor-pointer ${
-                    (currentLog.flow || 'none') === f.id
-                      ? 'bg-[#904639] text-white border-[#904639] shadow-2xs font-bold'
-                      : 'bg-[#f6f3ee] text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
+          {/* Quick Check-in Highlight Box (4 Essential Metrics: Sangrado, Energía, Digestión, Estrés) */}
+          <div className="p-3.5 bg-gradient-to-br from-[#fcf9f4] to-[#f6f3ee] rounded-2xl border border-[#dac1bd]/40 space-y-3.5">
+            {/* 1. Sangrado / Flujo */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#1c1c19] flex items-center gap-1">
+                  <span>1. Sangrado / Flujo:</span>
+                </span>
+                <span className="text-[11px] font-semibold text-[#904639]">
+                  {currentLog.flow === 'heavy' ? 'Abundante' : currentLog.flow === 'medium' ? 'Moderado' : currentLog.flow === 'light' ? 'Ligero' : currentLog.flow === 'spotting' ? 'Manchado' : 'Sin sangrado'}
+                </span>
+              </div>
+              <div className="grid grid-cols-5 gap-1 text-center">
+                {[
+                  { id: 'none', label: 'Ninguno' },
+                  { id: 'spotting', label: 'Manchado' },
+                  { id: 'light', label: 'Ligero' },
+                  { id: 'medium', label: 'Moderado' },
+                  { id: 'heavy', label: 'Abundante' },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => updateSelectedLog('flow', f.id)}
+                    className={`py-1.5 rounded-lg text-[11px] font-semibold transition-all border cursor-pointer ${
+                      (currentLog.flow || 'none') === f.id
+                        ? 'bg-[#904639] text-white border-[#904639] shadow-2xs font-bold'
+                        : 'bg-white text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Energy Level (1-5) */}
-          <div className="space-y-1.5">
-            <div className="flex justify-between text-xs">
-              <span className="font-semibold text-[#544340]">Nivel de Energía Vital:</span>
-              <span className="font-bold text-[#904639]">{currentLog.energy} / 5</span>
+            {/* 2. Nivel de Energía */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#1c1c19]">2. Nivel de Energía:</span>
+                <span className="text-[11px] font-bold text-[#4f6353]">
+                  {currentLog.energy === 5 ? 'Radiante (5/5)' : currentLog.energy === 4 ? 'Óptima (4/5)' : currentLog.energy === 3 ? 'Estable (3/5)' : currentLog.energy === 2 ? 'Baja (2/5)' : 'Agotada (1/5)'}
+                </span>
+              </div>
+              <div className="flex gap-1.5">
+                {[
+                  { lvl: 1, label: '1 Baja' },
+                  { lvl: 2, label: '2 Mínima' },
+                  { lvl: 3, label: '3 Estable' },
+                  { lvl: 4, label: '4 Alta' },
+                  { lvl: 5, label: '5 Radiante' },
+                ].map((item) => (
+                  <button
+                    key={item.lvl}
+                    type="button"
+                    onClick={() => updateSelectedLog('energy', item.lvl)}
+                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all border cursor-pointer ${
+                      currentLog.energy === item.lvl
+                        ? 'bg-[#4f6353] text-white border-[#4f6353] shadow-2xs'
+                        : 'bg-white text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((lvl) => (
-                <button
-                  key={lvl}
-                  type="button"
-                  onClick={() => updateSelectedLog('energy', lvl)}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
-                    currentLog.energy === lvl
-                      ? 'bg-[#904639] text-white border-[#904639]'
-                      : 'bg-[#f6f3ee] text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
-                  }`}
-                >
-                  {lvl}
-                </button>
-              ))}
+
+            {/* 3. Digestión e Inflamación Abdominal */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#1c1c19]">3. Digestión:</span>
+                <span className="text-[11px] font-semibold text-[#834e43]">
+                  {currentLog.digestion === 'hinchazon' ? 'Hinchazón' : currentLog.digestion === 'gases' ? 'Gases' : currentLog.digestion === 'estrenimiento' ? 'Estreñimiento' : 'Ligera y confortable'}
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5 text-center">
+                {[
+                  { id: 'ligera', label: 'Ligera' },
+                  { id: 'hinchazon', label: 'Hinchazón' },
+                  { id: 'gases', label: 'Gases' },
+                  { id: 'estrenimiento', label: 'Estreñimiento' },
+                ].map((d) => (
+                  <button
+                    key={d.id}
+                    type="button"
+                    onClick={() => updateSelectedLog('digestion', d.id)}
+                    className={`py-1.5 rounded-lg text-[11px] font-semibold transition-all border cursor-pointer ${
+                      (currentLog.digestion || 'ligera') === d.id
+                        ? 'bg-[#834e43] text-white border-[#834e43] shadow-2xs font-bold'
+                        : 'bg-white text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. Estrés & Carga Nerviosa */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#1c1c19]">4. Nivel de Estrés:</span>
+                <span className="text-[11px] font-semibold text-[#904639]">
+                  {currentLog.stress === 'sobrecarga' ? 'Sobrecarga adrenal' : currentLog.stress === 'elevado' ? 'Elevado' : currentLog.stress === 'moderado' ? 'Moderado' : 'Bajo y sereno'}
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5 text-center">
+                {[
+                  { id: 'bajo', label: 'Bajo' },
+                  { id: 'moderado', label: 'Moderado' },
+                  { id: 'elevado', label: 'Elevado' },
+                  { id: 'sobrecarga', label: 'Sobrecarga' },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => updateSelectedLog('stress', s.id)}
+                    className={`py-1.5 rounded-lg text-[11px] font-semibold transition-all border cursor-pointer ${
+                      (currentLog.stress || 'bajo') === s.id
+                        ? 'bg-[#904639] text-white border-[#904639] shadow-2xs font-bold'
+                        : 'bg-white text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

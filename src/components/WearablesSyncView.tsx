@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { WearableDevice } from '../types';
+import { WearableDevice, UserSubscription } from '../types';
 import { OfficialLogoBadge } from './Logo';
 
 interface WearablesSyncViewProps {
   wearables: WearableDevice[];
   onToggleConnect: (id: string) => void;
+  onOpenCarnet?: () => void;
+  onOpenSubscription?: () => void;
+  subscription?: UserSubscription;
 }
 
 export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
   wearables,
   onToggleConnect,
+  onOpenCarnet,
+  onOpenSubscription,
+  subscription,
 }) => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncSuccessMsg, setSyncSuccessMsg] = useState('');
   const [livePulse, setLivePulse] = useState(62);
+  const [showTrialPrompt, setShowTrialPrompt] = useState(false);
 
   // Live heart rate pulse simulator
   useEffect(() => {
@@ -36,6 +43,17 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
     }, 1200);
   };
 
+  const handleConnectDevice = (id: string) => {
+    const target = wearables.find((w) => w.id === id);
+    const willConnect = !target?.connected;
+    onToggleConnect(id);
+
+    // If connecting and user is on free tier, prompt 7-day trial Aha Moment
+    if (willConnect && subscription?.tier === 'free') {
+      setShowTrialPrompt(true);
+    }
+  };
+
   const activeDevice = wearables.find((w) => w.connected) || wearables[0];
 
   return (
@@ -46,10 +64,10 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
           <OfficialLogoBadge size="sm" />
           <div>
             <h1 className="font-headline text-2xl text-[#1c1c19] font-medium leading-tight">
-              Sincronización de Dispositivos
+              Sincronización Biomédica
             </h1>
             <p className="text-xs text-[#706663] mt-0.5">
-              Biomarcadores en tiempo real (Apple Watch, Oura, Garmin, Whoop)
+              Apple Watch, Oura Ring, Garmin, Whoop • VFC & Temperatura Basal
             </p>
           </div>
         </div>
@@ -57,7 +75,7 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
         <button
           onClick={handleSyncAll}
           disabled={isSyncing}
-          className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#4f6353] text-white hover:bg-[#384b3d] transition-all flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+          className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#4f6353] text-white hover:bg-[#384b3d] transition-all flex items-center gap-1.5 shadow-2xs disabled:opacity-50 cursor-pointer"
         >
           <span
             className={`material-symbols-outlined text-[16px] ${
@@ -71,9 +89,48 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
       </div>
 
       {syncSuccessMsg && (
-        <div className="p-3 bg-[#cfe5d1] text-[#536758] rounded-xl text-xs font-semibold flex items-center gap-2 border border-[#4f6353]/30">
+        <div className="p-3 bg-[#cfe5d1] text-[#536758] rounded-xl text-xs font-semibold flex items-center gap-2 border border-[#4f6353]/30 animate-fadeIn">
           <span className="material-symbols-outlined text-[18px]">check_circle</span>
           <span>{syncSuccessMsg}</span>
+        </div>
+      )}
+
+      {/* 7-Day Free Trial Aha-Moment Banner (Semana 3) */}
+      {showTrialPrompt && subscription?.tier === 'free' && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-[#cfe5d1]/80 via-[#fcf9f4] to-[#ffdad4]/60 border border-[#4f6353]/30 space-y-2 text-xs animate-fadeIn">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-2.5">
+              <span className="material-symbols-outlined text-[#4f6353] text-[22px] shrink-0 mt-0.5">
+                watch_wake
+              </span>
+              <div>
+                <span className="font-bold text-[#1c1c19] block text-sm">
+                  ¡Dispositivo Vinculado! Disfruta 7 Días de Prueba Gratuita
+                </span>
+                <p className="text-[11px] text-[#544340] mt-0.5 leading-snug">
+                  Descubre el <strong>Aha Moment</strong> de la correlación clínica continua: cómo tu VFC nocturna y temperatura basal anticipan tu energía y fases hormonales sin esfuerzo manual.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowTrialPrompt(false)}
+              className="text-[#706663] hover:text-[#1c1c19] cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px]">close</span>
+            </button>
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-1">
+            <button
+              onClick={() => {
+                setShowTrialPrompt(false);
+                onOpenSubscription?.();
+              }}
+              className="px-3 py-1.5 bg-[#4f6353] text-white font-bold rounded-xl text-xs hover:bg-[#384b3d] shadow-2xs cursor-pointer"
+            >
+              Activar 7 Días Gratis
+            </button>
+          </div>
         </div>
       )}
 
@@ -121,7 +178,7 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
               <span className="text-xs font-normal text-[#706663]">ms</span>
             </div>
             <div className="text-[10px] text-[#4f6353] mt-1 flex items-center gap-0.5">
-              <span>Tono parasimpático restaurado</span>
+              <span>+12% tono parasimpático restaurado</span>
             </div>
           </div>
 
@@ -163,9 +220,18 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
             Correlación Clínica AuraVital:
           </span>
           <p>
-            Tu elevación sostenida de temperatura (+0.2°C) y el leve ajuste en VFC (64ms) confirman una adecuada producción de progesterona tras la ovulación. No hay signos de sobreentrenamiento ni estrés suprarrenal.
+            Tu elevación sostenida de temperatura (+0.2°C) y el leve ajuste en VFC ({activeDevice.metrics.hrv}ms) confirman una adecuada producción de progesterona tras la ovulación. No hay signos de sobreentrenamiento ni estrés suprarrenal.
           </p>
         </div>
+
+        {/* Viral Share Story Button (Semana 2: Exportación a Story de Instagram) */}
+        <button
+          onClick={onOpenCarnet}
+          className="w-full h-11 rounded-xl bg-gradient-to-r from-[#904639] via-[#b86657] to-[#ae5e4f] text-white font-bold text-xs sm:text-sm hover:opacity-95 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+        >
+          <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+          <span>Exportar Carnet Hormonal a Story de Instagram (9:16)</span>
+        </button>
       </div>
 
       {/* Available Wearable Devices List */}
@@ -214,8 +280,8 @@ export const WearablesSyncView: React.FC<WearablesSyncViewProps> = ({
             </div>
 
             <button
-              onClick={() => onToggleConnect(device.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              onClick={() => handleConnectDevice(device.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 device.connected
                   ? 'bg-[#f6f3ee] text-[#904639] hover:bg-[#ffdad4]'
                   : 'bg-[#4f6353] text-white hover:bg-[#384b3d]'

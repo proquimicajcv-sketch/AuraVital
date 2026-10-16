@@ -73,15 +73,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </span>
                 </div>
                 <p className="text-[11px] text-[#706663] truncate sm:whitespace-normal">
-                  ¿Lista para el plato fuerte? Rutinas completas, IA y reportes PDF por máx. <strong>$7.99/mes</strong>.
+                  ¿Deseas profundizar en tu biometría? Activa el Plan Hormonal Pro con IA clínica, métricas continuas y sincronización por <strong>$7.99/mes</strong>.
                 </p>
               </div>
             </div>
             <button
               onClick={onOpenSubscription}
-              className="shrink-0 px-2.5 py-1 bg-[#904639] text-white text-[11px] font-bold rounded-lg hover:bg-[#ae5e4f] transition-all"
+              className="shrink-0 px-2.5 py-1 bg-[#904639] text-white text-[11px] font-bold rounded-lg hover:bg-[#ae5e4f] transition-all cursor-pointer"
             >
-              Probar Pro
+              Ver Plan Pro
             </button>
           </div>
         )}
@@ -151,41 +151,89 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Efficient Time Management Selector: 15 / 30 / 45 min */}
+      {/* Efficient Time Management Selector: 15 (FREE) vs 30 & 45 min (PREMIUM) */}
       <div className="bg-[#ffffff] rounded-2xl p-4 shadow-xs border border-[#dac1bd]/30">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#904639] text-[20px]">schedule</span>
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#1c1c19]">
-                Gestión Eficiente del Tiempo
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[#1c1c19]">
+                  Gestión Eficiente del Tiempo
+                </h2>
+                <span className="text-[9px] bg-[#cfe5d1] text-[#2d4734] font-bold px-1.5 py-0.2 rounded">
+                  1ª Opción FREE • Resto PRO
+                </span>
+              </div>
               <p className="text-[11px] text-[#706663]">
-                Adapta tu autocuidado y ejercicio según tu agenda de hoy
+                15 min siempre gratis. Rutinas de 30 y 45 min disponibles en la versión premium.
               </p>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2 mt-3">
-          {([15, 30, 45] as const).map((mins) => {
-            const isSelected = selectedDuration === mins;
+          {([
+            { mins: 15 as const, title: 'Express Vagal', tier: 'free' as const, badge: 'FREE' },
+            { mins: 30 as const, title: 'Equilibrio 30+', tier: 'premium' as const, badge: 'PREMIUM' },
+            { mins: 45 as const, title: 'Fuerza Total', tier: 'premium' as const, badge: 'PREMIUM' },
+          ]).map((item) => {
+            const isSelected = selectedDuration === item.mins;
+            const isLocked = item.tier === 'premium' && subscription.tier === 'free';
+
             return (
               <button
-                key={mins}
+                key={item.mins}
                 type="button"
-                onClick={() => onChangeDuration(mins)}
-                className={`py-2 px-2 rounded-xl text-center transition-all border ${
+                onClick={() => {
+                  onChangeDuration(item.mins);
+                }}
+                className={`py-2 px-1.5 rounded-xl text-center transition-all border relative cursor-pointer ${
                   isSelected
                     ? 'bg-[#904639] text-white border-[#904639] shadow-xs'
+                    : isLocked
+                    ? 'bg-[#fcf9f4] text-[#544340] border-[#dac1bd]/40 hover:bg-[#f6f3ee]'
                     : 'bg-[#f6f3ee] text-[#544340] border-[#dac1bd]/20 hover:bg-[#ebe8e3]'
                 }`}
               >
-                <div className="font-headline text-base font-bold leading-none">
-                  {mins} min
+                {/* Free vs Premium Badge */}
+                <div className="flex justify-center mb-1">
+                  {item.tier === 'free' ? (
+                    <span
+                      className={`text-[8.5px] font-bold uppercase px-1.5 py-0.2 rounded-full flex items-center gap-0.5 ${
+                        isSelected
+                          ? 'bg-white/20 text-white'
+                          : 'bg-[#cfe5d1] text-[#2d4734]'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[10px]">check_circle</span>
+                      FREE
+                    </span>
+                  ) : (
+                    <span
+                      className={`text-[8.5px] font-bold uppercase px-1.5 py-0.2 rounded-full flex items-center gap-0.5 ${
+                        isSelected
+                          ? 'bg-white/20 text-white'
+                          : 'bg-[#ffdad4] text-[#904639]'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[10px]">
+                        {isLocked ? 'lock' : 'workspace_premium'}
+                      </span>
+                      PRO
+                    </span>
+                  )}
                 </div>
-                <div className={`text-[10px] mt-0.5 ${isSelected ? 'text-white/80' : 'text-[#87726f]'}`}>
-                  {mins === 15 ? 'Express Vagal' : mins === 30 ? 'Equilibrio 30+' : 'Fuerza Total'}
+
+                <div className="font-headline text-base font-bold leading-none">
+                  {item.mins} min
+                </div>
+                <div
+                  className={`text-[9.5px] mt-0.5 font-medium truncate ${
+                    isSelected ? 'text-white/90' : 'text-[#87726f]'
+                  }`}
+                >
+                  {item.title}
                 </div>
               </button>
             );
@@ -256,13 +304,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {activeTabDetail === 'workout' ? (
           <div className="space-y-4">
+            {/* Routine Title & Tier indicator */}
             <div className="flex items-start justify-between">
               <div>
+                <div className="flex items-center gap-1.5 mb-1">
+                  {selectedDuration === 15 ? (
+                    <span className="text-[9px] bg-[#cfe5d1] text-[#2d4734] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[11px]">check_circle</span>
+                      Rutina Free (Siempre Gratis)
+                    </span>
+                  ) : (
+                    <span className="text-[9px] bg-[#ffdad4] text-[#904639] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[11px]">workspace_premium</span>
+                      Función Especializada • Plan Hormonal Pro
+                    </span>
+                  )}
+                </div>
                 <h3 className="font-headline text-base font-semibold text-[#1c1c19]">
                   {currentWorkout.title}
                 </h3>
                 <p className="text-xs text-[#706663] mt-0.5">
-                  Foco: {currentWorkout.focusArea}
+                  Foco: {currentWorkout.focusArea} • Duración: {selectedDuration} minutos
                 </p>
               </div>
 
@@ -275,49 +337,144 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {currentWorkout.description}
             </p>
 
-            {/* Exercise list with joint tips */}
-            <div className="space-y-2.5">
-              <span className="text-xs font-bold text-[#1c1c19] uppercase tracking-wider block">
-                Movimientos Guiados por Elena:
-              </span>
-              {currentWorkout.exercises.map((ex, idx) => (
-                <div
-                  key={idx}
-                  className="p-2.5 rounded-xl bg-[#fcf9f4] border border-[#dac1bd]/30 flex flex-col gap-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#1c1c19]">
-                      {idx + 1}. {ex.name}
+            {/* Exercise list with Free vs Premium distinction */}
+            {selectedDuration !== 15 && subscription.tier === 'free' ? (
+              <div className="space-y-3">
+                {/* Free preview of exercise 1 */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-[#1c1c19]">
+                    <span className="uppercase tracking-wider">
+                      Vista Previa Gratuita (Ejercicio 1 de {currentWorkout.exercises.length}):
                     </span>
-                    <span className="text-[11px] font-semibold text-[#904639]">
-                      {ex.setsReps}
+                    <span className="text-[10px] text-[#4f6353] bg-[#cfe5d1] px-2 py-0.5 rounded">
+                      Muestra Libre
                     </span>
                   </div>
-                  <div className="flex items-start gap-1 text-[11px] text-[#4f6353]">
-                    <span className="material-symbols-outlined text-[13px] shrink-0 mt-0.5">
-                      health_and_safety
+
+                  {currentWorkout.exercises.slice(0, 1).map((ex, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-xl bg-[#fcf9f4] border border-[#dac1bd]/30 flex flex-col gap-1 shadow-2xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#1c1c19]">
+                          1. {ex.name}
+                        </span>
+                        <span className="text-[11px] font-semibold text-[#904639]">
+                          {ex.setsReps}
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-1 text-[11px] text-[#4f6353]">
+                        <span className="material-symbols-outlined text-[13px] shrink-0 mt-0.5">
+                          health_and_safety
+                        </span>
+                        <span>{ex.jointTip}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Locked exercises blurred preview */}
+                <div className="relative rounded-2xl overflow-hidden border border-[#904639]/30 bg-gradient-to-b from-[#fffaf8] to-[#fbf4f2] p-4 text-center space-y-3 shadow-xs">
+                  <div className="w-10 h-10 rounded-full bg-[#ffdad4] text-[#904639] flex items-center justify-center mx-auto shadow-2xs">
+                    <span className="material-symbols-outlined text-[22px]">lock</span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#904639] bg-[#ffdad4]/60 px-2.5 py-0.5 rounded-full inline-block mb-1">
+                      Exclusivo Versión Premium
                     </span>
-                    <span>{ex.jointTip}</span>
+                    <h4 className="font-headline text-sm font-bold text-[#1c1c19]">
+                      Desbloquea la Rutina Completa de {selectedDuration} min
+                    </h4>
+                    <p className="text-xs text-[#544340] max-w-sm mx-auto mt-1 leading-relaxed">
+                      La rutina de <strong>15 min es 100% FREE</strong>. Los formatos de <strong>30 y 45 minutos</strong> incluyen todas las series guiadas por Elena, progresiones anti-sarcopenia y adaptaciones articulares dentro del <strong>Plan Hormonal Pro (máx. $7.99/mes)</strong>.
+                    </p>
+                  </div>
+
+                  {/* Teaser of remaining locked exercises */}
+                  <div className="opacity-40 blur-[1px] select-none space-y-1.5 py-1 text-left text-xs pointer-events-none">
+                    {currentWorkout.exercises.slice(1, 3).map((ex, idx) => (
+                      <div key={idx} className="p-2 rounded-lg bg-white border border-[#dac1bd]/40 flex justify-between">
+                        <span>🔒 {ex.name}</span>
+                        <span>{ex.setsReps}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={onOpenSubscription}
+                      className="w-full sm:w-auto px-4 py-2.5 bg-[#904639] text-white rounded-xl text-xs font-bold hover:bg-[#ae5e4f] shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">stars</span>
+                      <span>Desbloquear Rutina de {selectedDuration}m con Pro</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onChangeDuration(15)}
+                      className="w-full sm:w-auto px-3 py-2 bg-white text-[#544340] border border-[#dac1bd]/40 rounded-xl text-xs font-semibold hover:bg-[#f6f3ee] transition-all cursor-pointer"
+                    >
+                      Volver a Rutina 15m (FREE)
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              /* All exercises unlocked for 15min or Premium members */
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#1c1c19] uppercase tracking-wider block">
+                    Movimientos Guiados por Elena ({currentWorkout.exercises.length} ejercicios):
+                  </span>
+                  {selectedDuration !== 15 && subscription.tier === 'premium' && (
+                    <span className="text-[10px] bg-[#cfe5d1] text-[#2d4734] font-bold px-2 py-0.5 rounded">
+                      Acceso PRO Activo
+                    </span>
+                  )}
+                </div>
 
-            <button
-              onClick={() => setCompletedWorkout(!completedWorkout)}
-              className={`w-full py-3 rounded-xl font-body text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                completedWorkout
-                  ? 'bg-[#cfe5d1] text-[#536758]'
-                  : 'bg-[#904639] text-white hover:bg-[#ae5e4f]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">
-                {completedWorkout ? 'check_circle' : 'play_circle'}
-              </span>
-              <span>
-                {completedWorkout ? '¡Rutina de hoy completada!' : 'Marcar rutina como realizada'}
-              </span>
-            </button>
+                {currentWorkout.exercises.map((ex, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-xl bg-[#fcf9f4] border border-[#dac1bd]/30 flex flex-col gap-1"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#1c1c19]">
+                        {idx + 1}. {ex.name}
+                      </span>
+                      <span className="text-[11px] font-semibold text-[#904639]">
+                        {ex.setsReps}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-1 text-[11px] text-[#4f6353]">
+                      <span className="material-symbols-outlined text-[13px] shrink-0 mt-0.5">
+                        health_and_safety
+                      </span>
+                      <span>{ex.jointTip}</span>
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  onClick={() => setCompletedWorkout(!completedWorkout)}
+                  className={`w-full py-3 rounded-xl font-body text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    completedWorkout
+                      ? 'bg-[#cfe5d1] text-[#536758]'
+                      : 'bg-[#904639] text-white hover:bg-[#ae5e4f]'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {completedWorkout ? 'check_circle' : 'play_circle'}
+                  </span>
+                  <span>
+                    {completedWorkout ? '¡Rutina de hoy completada!' : 'Marcar rutina como realizada'}
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -347,7 +504,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     Menú Hormonal Sugerido:
                   </span>
                   <span className="text-[10px] text-[#4f6353] font-semibold">
-                    2 Básicas Gratis • Resto Plato Fuerte
+                    2 Básicas Gratis • Resto Plan Hormonal Pro
                   </span>
                 </div>
 
@@ -376,7 +533,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         {meal.isPremium ? (
                           <span className="text-[9px] font-bold bg-[#ffdad4] text-[#3c0702] px-1.5 py-0.5 rounded flex items-center gap-0.5">
                             <span className="material-symbols-outlined text-[10px]">workspace_premium</span>
-                            Plato Fuerte
+                            Plan Pro
                           </span>
                         ) : (
                           <span className="text-[9px] font-bold bg-[#cfe5d1] text-[#384b3d] px-1.5 py-0.5 rounded">
@@ -388,8 +545,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <h4 className="text-xs font-semibold text-[#1c1c19] mt-0.5 truncate">
                         {meal.name}
                       </h4>
-                      <p className="text-[10px] text-[#706663] italic mt-0.5 truncate">
-                        {meal.elenaAction}
+                      <p className="text-[10.5px] text-[#544340] italic mt-0.5 line-clamp-1">
+                        <strong className="text-[#904639] not-italic font-bold">Recomendación de Elena: </strong>
+                        {meal.elenaQuote}
                       </p>
                     </div>
                   </div>
@@ -407,27 +565,34 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         )}
       </div>
 
-      {/* Clinical PDF Report Quick Export Promo */}
+      {/* Clinical PDF Report Quick Export Promo (Specialized Feature) */}
       <div className="bg-gradient-to-r from-[#f6f3ee] to-[#ebe8e3] rounded-2xl p-4 border border-[#dac1bd]/30 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#ffdad4] text-[#904639] flex items-center justify-center shrink-0">
             <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
           </div>
           <div>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-[9px] uppercase tracking-wider font-bold bg-[#ffdad4] text-[#904639] px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-[10px]">workspace_premium</span>
+                Función Especializada • PRO
+              </span>
+            </div>
             <h4 className="text-xs font-bold text-[#1c1c19]">
-              Reporte Mensual para tu Especialista
+              Reporte Clínico Mensual en PDF
             </h4>
             <p className="text-[11px] text-[#706663]">
-              Descarga tu historial en PDF para ginecología, médico o nutrición.
+              Exporta tu historial biométrico para ginecología, médico de cabecera o nutricionista.
             </p>
           </div>
         </div>
 
         <button
           onClick={onOpenReportModal}
-          className="shrink-0 px-3.5 py-2 bg-[#904639] text-white rounded-lg text-xs font-semibold hover:bg-[#ae5e4f] transition-all shadow-xs"
+          className="shrink-0 px-3.5 py-2 bg-[#904639] text-white rounded-lg text-xs font-semibold hover:bg-[#ae5e4f] transition-all shadow-xs flex items-center gap-1 cursor-pointer"
         >
-          Exportar
+          <span className="material-symbols-outlined text-[15px]">download</span>
+          <span>Exportar</span>
         </button>
       </div>
 
