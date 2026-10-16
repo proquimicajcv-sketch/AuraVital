@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <!-- Drop Shadow -->
+    <filter id="badgeShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#2C2523" flood-opacity="0.12" />
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#2C2523" flood-opacity="0.08" />
+    </filter>
+
+    <!-- Inner Medal Gradients -->
+    <linearGradient id="badgeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCFAF6" />
+      <stop offset="50%" stop-color="#F7F3EB" />
+      <stop offset="100%" stop-color="#EFE9DE" />
+    </linearGradient>
+
+    <linearGradient id="bodyGradient" x1="30%" y1="0%" x2="70%" y2="100%">
+      <stop offset="0%" stop-color="#A25243" />
+      <stop offset="35%" stop-color="#C57564" />
+      <stop offset="65%" stop-color="#849887" />
+      <stop offset="100%" stop-color="#4F6353" />
+    </linearGradient>
+
+    <linearGradient id="goldCurve" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C396" />
+      <stop offset="50%" stop-color="#D4AA73" />
+      <stop offset="100%" stop-color="#B88A52" />
+    </linearGradient>
+
+    <linearGradient id="terracottaLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B86657" />
+      <stop offset="100%" stop-color="#8A3C2F" />
+    </linearGradient>
+
+    <linearGradient id="sageLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C9681" />
+      <stop offset="100%" stop-color="#4F6353" />
+    </linearGradient>
+
+    <!-- Curved Paths for Arced Text -->
+    <!-- Top Arc for AURA VITAL -->
+    <path id="arcTop" d="M 64,200 A 136,136 0 1,1 336,200" fill="none" />
+    <!-- Bottom Arc for HORMONAL LANDSCAPE (drawn from right to left so text is right-side up) -->
+    <path id="arcBottom" d="M 346,200 A 146,146 0 0,1 54,200" fill="none" />
+  </defs>
+
+  <!-- Outer circular medallion container -->
+  <circle cx="200" cy="200" r="185" fill="url(#badgeBg)" stroke="#E4DCD0" stroke-width="3" filter="url(#badgeShadow)" />
+  <!-- Inner subtle embossed rim -->
+  <circle cx="200" cy="200" r="182" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.8" />
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#DFD5C6" stroke-width="1.2" opacity="0.6" />
+
+  <!-- Top Arced Text: AURA VITAL -->
+  <text fill="#2C2523" font-family="'Playfair Display', Georgia, serif" font-size="34" font-weight="700" letter-spacing="7">
+    <textPath href="#arcTop" startOffset="50%" text-anchor="middle">AURA VITAL</textPath>
+  </text>
+
+  <!-- Bottom Arced Text: HORMONAL LANDSCAPE -->
+  <text fill="#4F6353" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="19" font-weight="700" letter-spacing="4.5">
+    <textPath href="#arcBottom" startOffset="50%" text-anchor="middle">HORMONAL LANDSCAPE</textPath>
+  </text>
+
+  <!-- Central Illustrated Seal Group -->
+  <g id="centerIllustration" transform="translate(200, 200)">
+    <!-- Inner circular boundary frame -->
+    <circle cx="0" cy="0" r="92" fill="#FAF6EE" stroke="url(#goldCurve)" stroke-width="1.8" opacity="0.75" />
+
+    <!-- Wave ripples on right & bottom (Hormonal flow) -->
+    <path d="M 28,-50 C 48,-35 62,-10 60,18 C 58,45 38,62 10,72" fill="none" stroke="url(#goldCurve)" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    <path d="M 42,-38 C 65,-20 78,6 74,35 C 70,62 48,80 18,88" fill="none" stroke="#7C9681" stroke-width="2.5" stroke-linecap="round" opacity="0.75" />
+    <path d="M -30,68 C 0,82 35,84 62,68" fill="none" stroke="#4F6353" stroke-width="3" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Left botanical leaves (Regeneration & Estrogen rhythm) -->
+    <!-- Top Leaf -->
+    <path d="M -22,-52 C -20,-72 -42,-65 -50,-42 C -45,-28 -28,-35 -22,-52 Z" fill="url(#terracottaLeaf)" />
+    <!-- Big Left Middle Leaf -->
+    <path d="M -28,-20 C -45,-45 -78,-32 -76,-5 C -74,18 -45,15 -28,-20 Z" fill="url(#terracottaLeaf)" opacity="0.9" />
+    <!-- Lower Left Sage Leaf -->
+    <path d="M -35,10 C -55,-5 -80,15 -68,38 C -55,52 -32,35 -35,10 Z" fill="url(#sageLeaf)" />
+    <!-- Small Accent Leaf -->
+    <path d="M -22,40 C -38,32 -48,46 -38,58 C -28,66 -16,52 -22,40 Z" fill="#6E8372" opacity="0.85" />
+
+    <!-- Vitality Concentric Core / Pearl (Center Left behind torso) -->
+    <g transform="translate(-8, 2)">
+      <ellipse cx="0" cy="0" rx="20" ry="14" fill="none" stroke="url(#terracottaLeaf)" stroke-width="3.5" />
+      <circle cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#904639" stroke-width="2" />
+      <circle cx="0" cy="0" r="3" fill="#D4AA73" />
+    </g>
+
+    <!-- Graceful Woman Figure (Vitality, flexibility, strength) -->
+    <!-- Head & Updo Bun -->
+    <circle cx="2" cy="-48" r="9" fill="#B86657" />
+    <circle cx="-6" cy="-52" r="5" fill="#8A3C2F" />
+
+    <!-- Arched Arms extending skyward -->
+    <path d="M 4,-40 C 2,-55 -8,-68 -1,-80 C 4,-72 16,-62 14,-45 Z" fill="#C57564" />
+    <path d="M 7,-40 C 18,-52 28,-62 38,-72 C 30,-58 20,-48 10,-35 Z" fill="#D48B7C" opacity="0.9" />
+
+    <!-- Torso and Left Extended Graceful Arm -->
+    <path d="M 3,-38 C -8,-25 -25,-12 -42,-18 C -30,-8 -12,-8 2,-26 Z" fill="#B86657" />
+
+    <!-- Flowing Torso, Back Arch, Hips, and Legs -->
+    <path d="M 6,-38 C 16,-24 24,-5 18,12 C 12,28 -5,48 -35,68 C -22,50 2,34 6,18 C 10,2 2,-16 0,-38 Z" fill="url(#bodyGradient)" />
+
+    <!-- Front Graceful Leg & Pointed Foot -->
+    <path d="M 12,18 C 24,30 38,42 52,42 C 42,48 24,46 4,32 Z" fill="#4F6353" />
+    <!-- Rear Leg Extending Back/Down -->
+    <path d="M -5,48 C -18,60 -32,75 -42,78 C -35,70 -20,58 -8,46 Z" fill="#3D5041" />
+
+    <!-- Highlight contour curve for dimensional polish -->
+    <path d="M 2,-32 C 11,-18 16,-2 12,14 C 8,26 -2,42 -22,58" fill="none" stroke="#FFF" stroke-width="1.8" opacity="0.45" stroke-linecap="round" />
+  </g>
+</svg>

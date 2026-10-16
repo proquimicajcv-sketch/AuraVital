@@ -1,0 +1,6 @@
+{
+  "name": "AuraVital - Salud Hormonal & Bienestar 30+",
+  "description": "Plataforma integral de salud femenina, sincronización de ciclo menstrual, nutrición metabólica, rutinas adaptadas, dispositivos wearables, foro comunitario y reportes clínicos para mujeres +30.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
