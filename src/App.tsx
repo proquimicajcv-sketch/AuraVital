@@ -315,6 +315,9 @@ export default function App() {
         onGoToNutrition={() => {
           setIsQuizOpen(false);
           setCurrentTab('nutrition_fitness');
+          if (subscription.tier !== 'premium') {
+            setIsSubscriptionModalOpen(true);
+          }
         }}
       />
 

@@ -229,16 +229,21 @@ export const VagalHormonalQuizModal: React.FC<VagalHormonalQuizModalProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="space-y-2">
+            <div className="space-y-2.5 pt-1">
               <button
                 onClick={() => {
                   onClose();
                   onGoToNutrition();
                 }}
-                className="w-full h-11 rounded-xl bg-[#904639] text-white font-bold text-xs sm:text-sm hover:bg-[#ae5e4f] shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-2xl bg-[#904639] text-white font-bold text-xs sm:text-sm hover:bg-[#ae5e4f] shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer transition-all"
               >
-                <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
-                <span>Ver Mi Plan Antiinflamatorio Personalizado</span>
+                <div className="flex items-center gap-1.5 font-bold">
+                  <span className="material-symbols-outlined text-[18px]">restaurant_menu</span>
+                  <span>Ver mi protocolo antiinflamatorio en AuraVital</span>
+                </div>
+                <span className="text-[10px] text-[#ffdad4] font-normal">
+                  (Pruébalo gratis durante 72 horas — Acceso inmediato sin esperas)
+                </span>
               </button>
 
               <button
